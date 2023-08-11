@@ -2,8 +2,8 @@ version: "3.8"
 services:
   zookeeper1:
     image: confluentinc/cp-zookeeper:${CP_TAG}
-    hostname: zookeeper
-    container_name: zookeeper
+    hostname: zookeeper1
+    container_name: zookeeper1
     restart: always
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -106,7 +106,7 @@ services:
       #CONTROL_CENTER_STREAMS_NUM_STREAM_THREADS: "5"
   #    CONTROL_CENTER_STREAMS_CPREST_URL: "http://broker1:8090,http://broker2:8091,http://broker3:8092"
 
- schema-registry1:
+  schema-registry1:
     image: confluentinc/cp-schema-registry:${CP_TAG}
     hostname: schema-registry1
     container_name: schema-registry1
@@ -114,35 +114,33 @@ services:
     ports:
       - '8081:8081'
     depends_on:
-      - zookeeper
-      - broker
+      - zookeeper1
+      - broker1
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:9091
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
-      SCHEMA_REGISTRY_LISTENERS: "http://schema-registry:8081"
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker1:9091
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry1
+      SCHEMA_REGISTRY_LISTENERS: "http://schema-registry1:8081"
       #SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL: "https"
       SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: INFO
       SCHEMA_REGISTRY_LOG4J_LOGLEVEL: ERROR
-
-
   rest-proxy1:
     image: confluentinc/cp-kafka-rest:${CP_TAG}
     hostname: rest-proxy1
     container_name: rest-proxy1
     restart: always
     depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
+      - zookeeper1
+      - broker1
+      - schema-registry1
     ports:
       - 8082:8082
     environment:
       KAFKA_REST_LOG4J_ROOT_LOGLEVEL: ERROR
       KAFKA_REST_LOG4J_LOGLEVEL: ERROR
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: broker:9091
-      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_REST_LISTENERS: "http://rest-proxy:8082"
+      KAFKA_REST_HOST_NAME: rest-proxy1
+      KAFKA_REST_BOOTSTRAP_SERVERS: broker1:9091
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper1:2181
+      KAFKA_REST_LISTENERS: "http://rest-proxy1:8082"
       KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"
 
 ## Second Cluster below
@@ -237,18 +235,17 @@ services:
     container_name: schema-registry2
     restart: always
     ports:
-      - '8081:8081'
+      - '8083:8083'
     depends_on:
-      - zookeeper
-      - broker
+      - zookeeper2
+      - broker4
     environment:
-      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:9091
-      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: broker:9094
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry2
       SCHEMA_REGISTRY_LISTENERS: "http://schema-registry:8081"
       #SCHEMA_REGISTRY_SCHEMA_REGISTRY_INTER_INSTANCE_PROTOCOL: "https"
       SCHEMA_REGISTRY_LOG4J_ROOT_LOGLEVEL: INFO
       SCHEMA_REGISTRY_LOG4J_LOGLEVEL: ERROR
-
 
   rest-proxy2:
     image: confluentinc/cp-kafka-rest:${CP_TAG}
@@ -256,16 +253,16 @@ services:
     container_name: rest-proxy2
     restart: always
     depends_on:
-      - zookeeper
-      - broker
-      - schema-registry
+      - zookeeper2
+      - broker4
+      - schema-registry2
     ports:
-      - 8082:8082
+      - 8084:8084
     environment:
       KAFKA_REST_LOG4J_ROOT_LOGLEVEL: ERROR
       KAFKA_REST_LOG4J_LOGLEVEL: ERROR
-      KAFKA_REST_HOST_NAME: rest-proxy
-      KAFKA_REST_BOOTSTRAP_SERVERS: broker:9091
-      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_REST_LISTENERS: "http://rest-proxy:8082"
+      KAFKA_REST_HOST_NAME: rest-proxy2
+      KAFKA_REST_BOOTSTRAP_SERVERS: broker4:9094
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper2:2182
+      KAFKA_REST_LISTENERS: "http://rest-proxy2:8082"
       KAFKA_HEAP_OPTS: "-Xmx1G -Xms1G"

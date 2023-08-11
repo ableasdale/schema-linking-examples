@@ -45,10 +45,30 @@ curl -s -XGET http://localhost:8083/schemas/types | jq
 
 ### Ensure ReST Proxy is working as expected
 
+Finally, we will make sure both ReST Proxy instances are running on both clusters; for ReST Proxy 1:
+
 ```bash
 curl --silent -X GET "http://localhost:8082/topics" | jq
 ```
 
+And for ReST Proxy 2:
+
 ```bash
 curl --silent -X GET "http://localhost:8084/topics" | jq
+```
+
+### Set up Schema Linking
+
+Now let's set up Schema Exporters:
+
+TODO - complete this...
+
+```
+docker-compose exec schema-registry1 bash -c 'schema-exporter --create --schema.registry.url http://localhost:8081 --name schema-link --config-file'
+```
+
+To get a full list of commands, run:
+
+```bash
+docker-compose exec schema-registry1 bash -c 'schema-exporter --help'
 ```

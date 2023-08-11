@@ -43,3 +43,12 @@ curl --silent -X GET http://localhost:8083/config | jq
 curl -s -XGET http://localhost:8083/schemas/types | jq
 ```
 
+### Ensure ReST Proxy is working as expected
+
+```bash
+curl --silent -X GET "http://localhost:8082/topics" | jq
+```
+
+```bash
+curl --silent -X GET "http://localhost:8084/topics" | jq
+```

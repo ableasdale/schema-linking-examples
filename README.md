@@ -27,3 +27,19 @@ Cluster 2: `-Eo-O5OxSFmXE3Kz6uhR1Q`
 
 ### Ensure Schema Registry is functional on both sides
 
+For Schema Registry 1:
+
+```bash
+curl --silent -X GET http://localhost:8081/subjects/ | jq
+curl --silent -X GET http://localhost:8081/config | jq
+curl -s -XGET http://localhost:8081/schemas/types | jq
+```
+
+For Schema Registry 2:
+
+```bash
+curl --silent -X GET http://localhost:8083/subjects/ | jq
+curl --silent -X GET http://localhost:8083/config | jq
+curl -s -XGET http://localhost:8083/schemas/types | jq
+```
+
